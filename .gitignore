@@ -1,3 +1,5 @@
+git.sh
+gitpush.sh
 *.egg-info
 *.pot
 *.py[co]
