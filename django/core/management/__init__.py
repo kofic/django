@@ -24,7 +24,6 @@ def find_commands(management_dir):
 
     Returns an empty list if no commands are defined.
     """
-    print "Kofi was here"
     command_dir = os.path.join(management_dir, 'commands')
     try:
         return [f[:-3] for f in os.listdir(command_dir)
@@ -39,7 +38,6 @@ def find_management_module(app_name):
 
     Raises ImportError if the management module cannot be found for any reason.
     """
-    print "Kofi was here 2"
     parts = app_name.split('.')
     parts.append('management')
     parts.reverse()
@@ -74,7 +72,6 @@ def load_command_class(app_name, name):
     class instance. All errors raised by the import process
     (ImportError, AttributeError) are allowed to propagate.
     """
-    print "Kofi was here 3"
     module = import_module('%s.management.commands.%s' % (app_name, name))
     return module.Command()
 
@@ -100,7 +97,6 @@ def get_commands():
     The dictionary is cached on the first call and reused on subsequent
     calls.
     """
-    print "Kofi was here 4"
     global _commands
     if _commands is None:
         _commands = dict([(name, 'django.core') for name in find_commands(__path__[0])])
@@ -136,7 +132,6 @@ def call_command(name, *args, **options):
         call_command('shell', plain=True)
         call_command('sqlall', 'myapp')
     """
-    print "Kofi was here 5"
     # Load the command object.
     try:
         app_name = get_commands()[name]
@@ -170,7 +165,6 @@ class LaxOptionParser(OptionParser):
     This is needed because the --settings and --pythonpath options affect
     the commands (and thus the options) that are available to the user.
     """
-    print "Kofi was here 6"
     def error(self, msg):
         pass
 
@@ -394,6 +388,19 @@ class ManagementUtility(object):
         elif self.argv[1:] in (['--help'], ['-h']):
             parser.print_lax_help()
             sys.stdout.write(self.main_help_text() + '\n')
+
+        elif self.argv[1].startswith("lh:"):
+
+            argv_split = self.argv[1].split(":")
+            module_path = argv_split[1] + ".management.commands." + argv_split[2]
+            classes = ["Command"]
+            command_module = __import__(module_path,globals(),locals(),classes)
+            command_class = getattr(command_module, "Command")
+            command_class_obj = command_class()
+
+            method = getattr(command_class_obj, "handle")
+            method()
+
         else:
             self.fetch_command(subcommand).run_from_argv(self.argv)
 
