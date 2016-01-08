@@ -1,3 +1,5 @@
+scratch
+*.scratch
 git.sh
 gitpush.sh
 *.egg-info
