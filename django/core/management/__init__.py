@@ -389,7 +389,7 @@ class ManagementUtility(object):
             parser.print_lax_help()
             sys.stdout.write(self.main_help_text() + '\n')
 
-        elif self.argv[1].startswith("lh:"):
+        elif self.argv[1].startswith("command:"):
 
             argv_split = self.argv[1].split(":")
             module_path = argv_split[1] + ".management.commands." + argv_split[2]
